@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 
 // 创建请求实例
 const instance = axios.create({
@@ -6,8 +6,8 @@ const instance = axios.create({
   // 指定请求超时的毫秒数
   timeout: 1000,
   // 表示跨域请求时是否需要使用凭证
-  withCredentials: false,
-});
+  withCredentials: false
+})
 
 // 前置拦截器（发起请求之前的拦截）
 instance.interceptors.request.use(
@@ -19,12 +19,12 @@ instance.interceptors.request.use(
      *  config.headers.token = token
      * }
      */
-    return config;
+    return config
   },
   (error) => {
-    return Promise.reject(error);
-  },
-);
+    return Promise.reject(error)
+  }
+)
 
 // 后置拦截器（获取到响应时的拦截）
 instance.interceptors.response.use(
@@ -33,18 +33,18 @@ instance.interceptors.response.use(
      * 根据你的项目实际情况来对 response 和 error 做处理
      * 这里对 response 和 error 不做任何处理，直接返回
      */
-    return response;
+    return response
   },
   (error) => {
-    const { response } = error;
+    const { response } = error
     if (response && response.data) {
-      return Promise.reject(error);
+      return Promise.reject(error)
     }
-    const { message } = error;
-    console.error(message);
-    return Promise.reject(error);
-  },
-);
+    const { message } = error
+    console.error(message)
+    return Promise.reject(error)
+  }
+)
 
 // 导出常用函数
 
@@ -58,9 +58,9 @@ export const post = (url, data = {}, params = {}) => {
     method: 'post',
     url,
     data,
-    params,
-  });
-};
+    params
+  })
+}
 
 /**
  * @param {string} url
@@ -70,9 +70,9 @@ export const get = (url, params = {}) => {
   return instance({
     method: 'get',
     url,
-    params,
-  });
-};
+    params
+  })
+}
 
 /**
  * @param {string} url
@@ -84,9 +84,9 @@ export const put = (url, data = {}, params = {}) => {
     method: 'put',
     url,
     params,
-    data,
-  });
-};
+    data
+  })
+}
 
 /**
  * @param {string} url
@@ -96,8 +96,8 @@ export const _delete = (url, params = {}) => {
   return instance({
     method: 'delete',
     url,
-    params,
-  });
-};
+    params
+  })
+}
 
-export default instance;
+export default instance

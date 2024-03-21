@@ -1,47 +1,51 @@
-import { defineConfig, loadEnv } from 'vite';
-import { resolve } from 'path';
-import vue from '@vitejs/plugin-vue';
-import AutoImport from 'unplugin-auto-import/vite';
-import Components from 'unplugin-vue-components/vite';
-import { TDesignResolver } from 'unplugin-vue-components/resolvers';
+import { defineConfig, loadEnv } from 'vite'
+import { resolve } from 'path'
+import vue from '@vitejs/plugin-vue'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import Icons from 'unplugin-icons/vite'
+import IconsResolver from 'unplugin-icons/resolver'
+import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
 
 export default ({ mode }) => {
-  const { VITE_PORT, VITE_BASE_URL } = loadEnv(mode, process.cwd());
+  const { VITE_PORT, VITE_BASE_URL } = loadEnv(mode, process.cwd())
 
   return defineConfig({
     base: VITE_BASE_URL,
     plugins: [
       vue(),
+      Icons({ autoInstall: true, compiler: 'vue3' }),
       AutoImport({
-        resolvers: [
-          TDesignResolver({
-            library: 'vue-next',
-          }),
-        ],
+        imports: ['vue', 'vue-router', 'pinia'],
+        include: [/\.[tj]sx?$/, /\.vue$/], // 匹配的文件，也就是哪些后缀的文件需要自动引入
+        resolvers: [AntDesignVueResolver()],
+        eslintrc: {
+          enabled: false,
+          filepath: './.eslintrc-auto-import.json', // @default './.eslintrc-auto-import.json'
+          globalsPropValue: false // @default true 可设置 boolean | 'readonly' | 'readable' | 'writable' | 'writeable'
+        },
+        dts: false
       }),
       Components({
-        resolvers: [
-          TDesignResolver({
-            library: 'vue-next',
-          }),
-        ],
-      }),
+        resolvers: [AntDesignVueResolver({ importStyle: 'less', resolveIcons: true }), IconsResolver()],
+        dts: false
+      })
     ],
     resolve: {
       alias: {
-        '@': resolve(__dirname, 'src'),
-      },
+        '@': resolve(__dirname, 'src')
+      }
     },
     css: {
       preprocessorOptions: {
         less: {
           modifyVars: {
-            hack: `true; @import (reference) "${resolve('src/style/variables.less')}";`,
+            hack: `true; @import (reference) "${resolve('src/style/variables.less')}";`
           },
           math: 'strict',
-          javascriptEnabled: true,
-        },
-      },
+          javascriptEnabled: true
+        }
+      }
     },
     server: {
       // 是否开启 https
@@ -55,7 +59,7 @@ export default ({ mode }) => {
       // 允许跨域
       cors: true,
       // 自定义代理规则
-      proxy: {},
+      proxy: {}
     },
     build: {
       // 设置最终构建的浏览器兼容目标
@@ -65,7 +69,7 @@ export default ({ mode }) => {
       //  chunk 大小警告的限制（以 kbs 为单位）
       chunkSizeWarningLimit: 2000,
       // 启用/禁用 gzip 压缩大小报告
-      reportCompressedSize: false,
-    },
-  });
-};
+      reportCompressedSize: false
+    }
+  })
+}

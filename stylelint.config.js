@@ -1,11 +1,12 @@
 module.exports = {
   root: true,
-  plugins: ['stylelint-order'],
+  defaultSeverity: 'error',
+  plugins: ['stylelint-order', 'stylelint-less'], // CSS 属性顺序规则插件
   extends: [
-    'stylelint-config-standard',
-    'stylelint-config-prettier',
-    'stylelint-config-recommended-less',
-    'stylelint-config-standard-vue',
+    'stylelint-config-standard', // stylelint标准配置，普通css，默认
+    'stylelint-config-html/html', // 配置vue中template样式格式化
+    'stylelint-config-html/vue', //  vue相关配置
+    'stylelint-config-recess-order' // 配置stylelint css属性书写顺序插件,
   ],
   rules: {
     // 禁止在覆盖高特异性选择器之后出现低特异性选择器
@@ -28,9 +29,9 @@ module.exports = {
           'if',
           'each',
           'include',
-          'mixin',
-        ],
-      },
+          'mixin'
+        ]
+      }
     ],
     // 不允许未知函数
     'function-no-unknown': null,
@@ -49,7 +50,7 @@ module.exports = {
     // 要求或禁止在规则之前的空行
     'rule-empty-line-before': ['always', { ignore: ['after-comment', 'first-nested'] }],
     'media-feature-range-notation': null,
-    'selector-anb-no-unmatchable': null,
+    'selector-anb-no-unmatchable': null
   },
   ignoreFiles: ['**/*.js', '**/*.jsx', '**/*.tsx', '**/*.ts', '**/*.json', '**/*.md', '**/*.yaml'],
   overrides: [
@@ -60,16 +61,17 @@ module.exports = {
         // 禁止未知的伪类选择器
         'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['deep', 'global'] }],
         // 禁止未知的伪元素选择器
-        'selector-pseudo-element-no-unknown': [true, { ignorePseudoElements: ['v-deep', 'v-global', 'v-slotted'] }],
-      },
+        'selector-pseudo-element-no-unknown': [true, { ignorePseudoElements: ['v-deep', 'v-global', 'v-slotted'] }]
+      }
     },
     {
       files: ['*.less', '**/*.less'],
       customSyntax: 'postcss-less',
+      extends: ['stylelint-config-standard-less'],
       rules: {
         'less/color-no-invalid-hex': true,
-        'less/no-duplicate-variables': true,
-      },
-    },
-  ],
-};
+        'less/no-duplicate-variables': true
+      }
+    }
+  ]
+}
