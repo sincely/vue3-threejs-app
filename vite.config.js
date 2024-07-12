@@ -1,36 +1,13 @@
 import { defineConfig, loadEnv } from 'vite'
 import { resolve } from 'path'
-import vue from '@vitejs/plugin-vue'
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import Icons from 'unplugin-icons/vite'
-import IconsResolver from 'unplugin-icons/resolver'
-import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
-
-export default ({ mode }) => {
-  const { VITE_PORT, VITE_BASE_URL } = loadEnv(mode, process.cwd())
-
+import createVitePlugins from './build/plugins'
+const root = process.cwd()
+export default ({ mode, command }) => {
+  const { VITE_PORT, VITE_BASE_URL } = loadEnv(mode, root)
+  const viteEnv = loadEnv(mode, root, '')
   return defineConfig({
     base: VITE_BASE_URL,
-    plugins: [
-      vue(),
-      Icons({ autoInstall: true, compiler: 'vue3' }),
-      AutoImport({
-        imports: ['vue', 'vue-router', 'pinia'],
-        include: [/\.[tj]sx?$/, /\.vue$/], // 匹配的文件，也就是哪些后缀的文件需要自动引入
-        resolvers: [AntDesignVueResolver()],
-        eslintrc: {
-          enabled: false,
-          filepath: './.eslintrc-auto-import.json', // @default './.eslintrc-auto-import.json'
-          globalsPropValue: false // @default true 可设置 boolean | 'readonly' | 'readable' | 'writable' | 'writeable'
-        },
-        dts: false
-      }),
-      Components({
-        resolvers: [AntDesignVueResolver({ importStyle: 'less', resolveIcons: true }), IconsResolver()],
-        dts: false
-      })
-    ],
+    plugins: createVitePlugins(viteEnv, command === 'build'),
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src')

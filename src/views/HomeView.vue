@@ -1,9 +1,14 @@
 <script setup>
-import TheWelcome from '@/components/TheWelcome.vue'
+import { TresCanvas } from '@tresjs/core'
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+  <TresCanvas clear-color="#82DBC5" window-size>
+    <TresPerspectiveCamera :position="[3, 3, 3]" :fov="45" :look-at="[0, 0, 0]" />
+    <TresMesh>
+      <TresTorusGeometry :args="[1, 0.5, 16, 32]" />
+      <TresMeshBasicMaterial color="orange" />
+    </TresMesh>
+    <TresAmbientLight :intensity="1" />
+  </TresCanvas>
 </template>
